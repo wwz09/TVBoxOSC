@@ -64,8 +64,8 @@ jobs:
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          chmod +x ${{ diy }}
-          bash ${{ diy }}
+          chmod +x "${{ diy }}"
+          bash "${{ diy }}"
           
       - name: Extra Modify
         if: ${{ env.commit }}
