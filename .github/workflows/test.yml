@@ -64,8 +64,8 @@ jobs:
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          chmod +x ${{ github.workspace }}/DIY/"${{ diy }}"
-          bash ${{ github.workspace }}/DIY/"${{ diy }}"
+          chmod +x ${{ github.workspace }}/DIY/${{ matrix.diy }}
+          bash ${{ github.workspace }}/DIY/${{ matrix.diy }}
           
       - name: Extra Modify
         if: ${{ env.commit }}
