@@ -24,19 +24,19 @@ jobs:
           - userName: q215613905
             repoName: TVBoxOS
             branchName: main
-            diy-sh: q215613905.sh
+            diyName: q215613905.sh
           - userName: takagen99
             repoName: Box
             branchName: main
-            diy-sh: takagen99.sh
+            diyName: takagen99.sh
           - userName: mlabalabala
             repoName: box
             branchName: main
-            diy-sh: mlabalabalaDC.sh
+            diyName: mlabalabalaDC.sh
           - userName: chengxue2020
             repoName: box
             branchName: main
-            diy-sh: chengxue2020DC.sh
+            diyName: chengxue2020DC.sh
             java_ver: 17
     steps:
       - name: Checkout
@@ -64,8 +64,8 @@ jobs:
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          chmod +x ${{ github.workspace }}/DIY/${{ diy-sh }}
-          bash ${{ github.workspace }}/DIY/${{ diy-sh }}
+          chmod +x ${{ github.workspace }}/DIY/${{ diyName }}
+          bash ${{ github.workspace }}/DIY/${{ diyName }}
           
       - name: Extra Modify
         if: ${{ env.commit }}
