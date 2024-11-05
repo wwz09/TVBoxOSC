@@ -11,7 +11,7 @@ on:
         type: boolean
       donotpublish:
         description: '构建后不提交发布新版'
-        required: false
+        required: true
         type: boolean
 
 jobs:
