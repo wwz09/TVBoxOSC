@@ -1,12 +1,8 @@
-name: q21561390_Box_build
+name: Box_build
 
 on:
-  #schedule:
-    #- cron:  '30 5,17 * * *'
-  #push:
-    #branches:
-      #- main
-  #pull_request:
+  schedule:
+    - cron: 59 */8 * * *
   workflow_dispatch:
     inputs:
       rebuild:
