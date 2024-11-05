@@ -24,19 +24,19 @@ jobs:
           - userName: q215613905
             repoName: TVBoxOS
             branchName: main
-            diy: q215613905
+            diy: ./DIY/q215613905.sh
           - userName: takagen99
             repoName: Box
             branchName: main
-            diy: takagen99
+            diy: ./DIY/takagen99.sh
           - userName: mlabalabala
             repoName: box
             branchName: main
-            diy: mlabalabalaDC
+            diy: ./DIY/mlabalabalaDC.sh
           - userName: chengxue2020
             repoName: box
             branchName: main
-            diy: chengxue2020DC
+            diy: ./DIY/chengxue2020DC.sh
             java_ver: 17
     steps:
       - name: Checkout
@@ -60,12 +60,12 @@ jobs:
           git checkout ${{ env.commit }}
           echo "tag=$(git log --date=format:'%Y%m%d-%H%M' --pretty=format:%cd ${{ env.commitS }} -1)" >> $GITHUB_ENV
 
-      - name: DIY PY
+      - name: DIY 
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          chmod +x ${{ github.workspace }}/DIY/${{ diy }}.sh
-          bash ${{ github.workspace }}/DIY/${{ diy }}.sh
+          chmod +x ${{ diy }}
+          bash ${{ diy }}
           
       - name: Extra Modify
         if: ${{ env.commit }}
