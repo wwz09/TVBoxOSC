@@ -314,8 +314,8 @@ public class ApiDialog extends BaseDialog {
                     Toast.makeText(getContext(), "已获得存储权限", Toast.LENGTH_SHORT).show();
                 } else {
                     XXPermissions.with(getContext())
-                            。permission(Permission.Group.STORAGE)
-                            。request(new OnPermissionCallback() {
+                           . permission(Permission.Group.STORAGE)
+                           . request(new OnPermissionCallback() {
                                 @Override
                                 public void onGranted(List<String> permissions, boolean all) {
                                     if (all) {
