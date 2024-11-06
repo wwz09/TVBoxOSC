@@ -2,7 +2,7 @@ name: Box_build
 
 on:
   schedule:
-    - cron:  '30 5,17 * * *'
+    - cron: '0 12 * * *' # 每天中午12点触发编译任务
   workflow_dispatch:
     inputs:
       rebuild:
