@@ -8,11 +8,11 @@ on:
       rebuild:
         description: '忽略构建记录以重新构建'
         required: false
-        type: boolean
-      donotpublish:
-        description: '构建后不提交发布新版'
-        required: false
-        type: boolean
+        #type: boolean
+     # donotpublish:
+        #description: '构建后不提交发布新版'
+        #required: false
+        #type: boolean
 
 jobs:
   build:
