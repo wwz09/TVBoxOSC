@@ -7,7 +7,7 @@ on:
     inputs:
       rebuild:
         description: '忽略构建记录以重新构建'
-        required: false
+        required: true
         type: boolean
       donotpublish:
         description: '构建后不提交发布新版'
