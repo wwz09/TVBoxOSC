@@ -43,15 +43,30 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      #- name: Check New Commit
+      #  run: |
+      #    upStream=https://github.com/${{ matrix.userName }}/${{ matrix.repoName }}
+       #   echo "upStream=$upStream" >> $GITHUB_ENV
+       #   commit=$(curl -sL $upStream/commits/${{ matrix.branchName }} |grep -o "/${{ matrix.userName }}/${{ matrix.repoName }}/commit/[a-z0-9]\+" |head -1 | cut -d\/ -f5)
+      #    if ! grep -q "$commit" README.md || [ "${{ inputs.rebuild }}" == "true" ]; then
+       #     echo "commit=$commit" >> $GITHUB_ENV
+       #     echo "commitS=${commit:0:7}" >> $GITHUB_ENV
+       #   fi
+          
       - name: Check New Commit
         run: |
-          upStream=https://github.com/${{ matrix.userName }}/${{ matrix.repoName }}
+          upStream="https://github.com/${{  matrix.userName }}/${{ matrix.repoName }}"
           echo "upStream=$upStream" >> $GITHUB_ENV
-          commit=$(curl -sL $upStream/commits/${{ matrix.branchName }} |grep -o "/${{ matrix.userName }}/${{ matrix.repoName }}/commit/[a-z0-9]\+" |head -1 | cut -d\/ -f5)
-          if ! grep -q "$commit" README.md || [ "${{ inputs.rebuild }}" == "true" ]; then
+          commit=$(curl -sL "https://api.github.com/repos/${{  matrix.userName }}/${{ matrix.repoName }}/commits/${{ matrix.branchName }}" | jq -r '.sha')
+          if [ $? -ne 0 ]; then
+            echo "Failed to get commit from API"
+            exit 1
+          fi
+          if [ -z "$commit" ] || ! grep -q "$commit" README.md; then
             echo "commit=$commit" >> $GITHUB_ENV
             echo "commitS=${commit:0:7}" >> $GITHUB_ENV
           fi
+          
       - name: Checkout Source Code
         if: ${{ env.commit }}
         run: |
