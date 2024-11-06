@@ -51,7 +51,7 @@ jobs:
           git checkout ${{ env.commit }}
           echo "tag=$(git log --date=format:'%Y%m%d-%H%M' --pretty=format:%cd ${{ env.commitS }} -1)" >> $GITHUB_ENV
 
-     - name: DIY 
+      - name: DIY 
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
