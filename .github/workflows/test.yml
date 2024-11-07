@@ -9,10 +9,6 @@ on:
         description: '忽略构建记录以重新构建'
         required: false
         type: boolean
-      donotpublish:
-        description: '构建后不提交发布新版'
-        required: false
-        type: boolean
 
 jobs:
   build:
@@ -25,21 +21,25 @@ jobs:
             repoName: TVBoxOS
             branchName: main
             diy: q215613905.sh
+            osName: q21
             java_ver: 11
           - userName: takagen99
             repoName: Box
             branchName: main
             diy: takagen99.sh
+            osName: t99
             java_ver: 17
           - userName: mlabalabala
             repoName: box
             branchName: main
             diy: mlabalabalaDC.sh
+            osName: mla
             java_ver: 11
           - userName: wwz09
             repoName: duocangbox
             branchName: main
             diy: chengxue2020DC.sh
+            osName: duo
             java_ver: 11
     steps:
       - name: Checkout
@@ -150,21 +150,7 @@ jobs:
             mv "$file" "apk/$new_base"
           done
           mv sourceCode-${{ env.commitS }}.* apk/
-
-      - name: 发行说明
-        if: ${{ env.commit }}
-        working-directory: TVBoxOSC
-        run: |
-          lastCommit=$(grep "${{ matrix.userName }}\/${{ matrix.repoName }}" ${{ github.workspace }}/README.md |grep -o '[a-z0-9]\{40\}')
-          export LESSCHARSET=utf-8
-          echo -e "Credit: [${{ matrix.userName }}](${{ env.upStream }})\nCommit: ${{ env.commit }}\nChangelog:\n\`\`\`" > apk/${{ matrix.userName }}-Release.log
-          if [ "${{ env.commit }}" == "${lastCommit}" ]; then
-            git log --pretty=format:%B ${{ env.commitS }} -1 |sed -e "s# \{2,\}#\n#g" -e "/^Merge \(pull\|branch\|remote\)/d" -e '/^$/d' |cat -n |sort -k2,2 -k1,1n |uniq -f1 |sort -k1,1n |cut -f2- >> apk/${{ matrix.userName }}-Release.log
-          else
-            git log --pretty=format:%B ${{ env.commitS }}...${lastCommit:0:7} |sed -e "s# \{2,\}#\n#g" -e "/^Merge \(pull\|branch\|remote\)/d" -e '/^$/d' |cat -n |sort -k2,2 -k1,1n |uniq -f1 |sort -k1,1n |cut -f2- >> apk/${{ matrix.userName }}-Release.log
-          fi
-          echo -e '\n```' >> apk/${{ matrix.userName }}-Release.log
-
+          
       - name: 程序上传
         uses: actions/upload-artifact@v4
         if: ${{ env.commit }}
@@ -172,11 +158,6 @@ jobs:
           name: ${{ matrix.userName }}-${{ matrix.repoName }}
           path: |
             TVBoxOSC/apk/*
-
-      - name: Whether Or Not to Publish
-        if: ${{ inputs.donotpublish && env.commit }}
-        run: |
-          echo "commit=" >> $GITHUB_ENV
 
       - name: 发布并上传
         uses: ncipollo/release-action@v1
