@@ -74,7 +74,7 @@ jobs:
         working-directory: TVBoxOSC
         run: |
           echo '修改VersionName'
-          if [ "${{ matrix.userName }}" == "takagen99" ]; then
+          if [ "${{ matrix.userName }}" == "matrix.userName" ]; then
             # 进行 sed 修改
             sed -i 's/\.concat(buildTime())/ +\"${{ env.tag }}\"/g' app/build.gradle 
             # 目前关于页面没有合并我的分支
