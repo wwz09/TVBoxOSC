@@ -21,25 +21,21 @@ jobs:
             repoName: TVBoxOS
             branchName: main
             diy: q215613905.sh
-            osName: q21
             java_ver: 11
           - userName: takagen99
             repoName: Box
             branchName: main
             diy: takagen99.sh
-            osName: t99
             java_ver: 17
           - userName: mlabalabala
             repoName: box
             branchName: main
             diy: mlabalabalaDC.sh
-            osName: mla
             java_ver: 11
           - userName: wwz09
             repoName: duocangbox
             branchName: main
             diy: chengxue2020DC.sh
-            osName: duo
             java_ver: 11
     steps:
       - name: Checkout
