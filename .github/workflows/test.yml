@@ -33,8 +33,8 @@ jobs:
             repoName: box
             branchName: main
             diy: mlabalabalaDC.sh
-          - userName: chengxue2020
-            repoName: box
+          - userName: wwz09
+            repoName: duocangbox
             branchName: main
             diy: chengxue2020DC.sh
             java_ver: 17
