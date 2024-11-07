@@ -15,7 +15,7 @@ cp -rf $GITHUB_WORKSPACE/DIY/dc/ModelSettingFragment.java app/src/main/java/com/
 cp -rf $GITHUB_WORKSPACE/DIY/dc/Checker.java app/src/main/java/com/github/tvbox/osc/bbox/util/Checker.java
 cp -rf $GITHUB_WORKSPACE/DIY/dc/App.java app/src/main/java/com/github/tvbox/osc/bbox/base/App.java
 cp -rf $GITHUB_WORKSPACE/DIY/dc/URL.java app/src/main/java/com/github/tvbox/osc/bbox/constant/URL.java
-sed -i 's%tv.org.eu.bunnyabc%tv.org.eu.bunnyabc.${{ matrix.osName }}%g' app/build.gradle
+sed -i 's%tv.org.eu.bunnyabc%tv.org.eu.bunnyabc.duo%g' app/build.gradle
 sed -i 's%Jade%酷影视%g' app/src/main/res/values/strings.xml
 
 echo 'DIY end'
