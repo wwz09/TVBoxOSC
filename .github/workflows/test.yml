@@ -123,7 +123,8 @@ jobs:
           
       - uses: gradle/actions/setup-gradle@v4
         if: ${{ env.commit }}
-      - name: Build With Gradle
+
+      - name: 进行构建
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
