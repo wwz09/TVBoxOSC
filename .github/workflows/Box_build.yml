@@ -2,7 +2,7 @@ name: Box_build
 
 on:
   schedule:
-    - cron: 30 */3 * * * # 每隔 3 小时的第 30 分钟会自动触发工作流执行
+    - cron: 30 */1 * * * # 每隔 1 小时的第 30 分钟会自动触发工作流执行
   workflow_dispatch:
     inputs:
       rebuild:
