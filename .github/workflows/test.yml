@@ -2,7 +2,7 @@ name: Test
 
 on:
   schedule:
-    - cron: 30 */2 * * * # 每隔 2 小时的第 30 分钟会自动触发工作流执行
+    - cron: 20 */1 * * * # 每隔 2 小时的第 30 分钟会自动触发工作流执行
   workflow_dispatch:
     inputs:
       rebuild:
