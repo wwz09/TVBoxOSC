@@ -2,7 +2,7 @@ name: Test
 
 on:
   schedule:
-    - cron: 20 */1 * * * # 每隔 2 小时的第 30 分钟会自动触发工作流执行
+    - cron: 30 */2 * * * # 每隔 2 小时的第 30 分钟会自动触发工作流执行
   workflow_dispatch:
     inputs:
       rebuild:
@@ -39,7 +39,7 @@ jobs:
             java_ver: 11
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
         with:
           fetch-depth: 0
           
@@ -47,8 +47,10 @@ jobs:
         run: |
           upStream=https://github.com/${{ matrix.userName }}/${{ matrix.repoName }}
           echo "upStream=$upStream" >> $GITHUB_ENV
-          commit=$(curl -sL $upStream/commits/${{ matrix.branchName }} |grep -o "/${{ matrix.userName }}/${{ matrix.repoName }}/commit/[a-z0-9]\+" |head -1 | cut -d\/ -f5)
-          if ! grep -q "$commit" README.md || [ "${{ inputs.rebuild }}" == "true" ]; then
+          git clone https://github.com/${{ matrix.userName }}/${{ matrix.repoName }} TVBoxOSC
+          cd TVBoxOSC
+          commit=$(git rev-parse HEAD)
+          if ! grep -q "$commit" ../README.md || [ "${{ inputs.rebuild }}" == "true" ]; then
             echo "commit=$commit" >> $GITHUB_ENV
             echo "commitS=${commit:0:7}" >> $GITHUB_ENV
           fi
@@ -111,14 +113,26 @@ jobs:
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
 
-      - uses: actions/setup-java@v4
+      - name: Cache
+        uses: actions/cache@main
+        if: ${{ env.commit }}
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-${{ matrix.userName }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.userName }}-
+            
+      - uses: actions/setup-java@main
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
           java-version: ${{ matrix.java_ver }}
           
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
         if: ${{ env.commit }}
+        uses: gradle/actions/setup-gradle@main
 
       - name: 进行构建
         if: ${{ env.commit }}
