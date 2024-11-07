@@ -9,10 +9,6 @@ on:
         description: '忽略构建记录以重新构建'
         required: false
         type: boolean
-      donotpublish:
-        description: '构建后不提交发布新版'
-        required: false
-        type: boolean
 
 jobs:
   build:
@@ -158,11 +154,6 @@ jobs:
           name: ${{ matrix.userName }}-${{ matrix.repoName }}
           path: |
             TVBoxOSC/apk/*
-
-      - name: Whether Or Not to Publish
-        if: ${{ inputs.donotpublish && env.commit }}
-        run: |
-          echo "commit=" >> $GITHUB_ENV
 
       - name: 发布并上传
         uses: ncipollo/release-action@v1
