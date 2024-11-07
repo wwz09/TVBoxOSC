@@ -47,7 +47,7 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Check New Commit
+      - name: 检查新的提交
         run: |
           upStream=https://github.com/${{ matrix.userName }}/${{ matrix.repoName }}
           echo "upStream=$upStream" >> $GITHUB_ENV
@@ -57,7 +57,7 @@ jobs:
             echo "commitS=${commit:0:7}" >> $GITHUB_ENV
           fi
           
-      - name: Checkout Source Code
+      - name: 签出源代码
         if: ${{ env.commit }}
         run: |
           git clone ${{ env.upStream }} TVBoxOSC
@@ -72,27 +72,34 @@ jobs:
           chmod +x ${{ github.workspace }}/DIY/${{ matrix.diy }}
           bash ${{ github.workspace }}/DIY/${{ matrix.diy }}
           
-      - name: Extra Modify
+      - name: 额外修改
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
+          echo '修改VersionName'
+          if [ "${{ matrix.userName }}" == "takagen99" ]; then
+            # 进行 sed 修改
+            sed -i 's/\.concat(buildTime())/ +\"${{ env.tag }}\"/g' app/build.gradle 
+            # 目前关于页面没有合并我的分支
+            sed -i "/android:text=/s#=\"#=\"${{ env.tag }}\\\\n\\\\n#" app/src/main/res/layout/dialog_about.xml
+          else
+             sed -i "/versionName/s#[0-9a-zA-Z_\.\'\"-]\+\$#\'${{ env.tag }}\'#" app/build.gradle
+             sed -i "/android:text=/s#=\"#=\"${{ env.tag }}\\\\n\\\\n#" app/src/main/res/layout/dialog_about.xml
+          fi 
           echo 'crosswalk源，防挂'
           if grep -q 'crosswalk' build.gradle; then
             sed -i "/crosswalk/a\        maven { url 'https://o0halflife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
           else
             sed -i "/jitpack.io/a\        maven { url 'https://o0halflife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
           fi
-
-
-      - name: Compress Source Code
+      - name: 压缩源代码
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
           #zip -q -x ".git/*" -x  ".github/*" -r sourceCode-${{ env.commitS }}.zip .
           tar -cJf sourceCode-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
 
-
-      - name: Release Apk Sign
+      - name: 安卓安装包签名
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
@@ -107,7 +114,6 @@ jobs:
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
 
-
       - uses: actions/setup-java@v4
         if: ${{ matrix.java_ver }}
         with:
@@ -116,8 +122,6 @@ jobs:
           
       - uses: gradle/actions/setup-gradle@v4
         if: ${{ env.commit }}
-
-
       - name: Build With Gradle
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
@@ -125,37 +129,45 @@ jobs:
           chmod +x gradlew
           ./gradlew assemblerelease --build-cache --parallel --daemon --warning-mode all
 
-
-      - name: Prepare App
+      - name: 准备应用程序
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-         rm -rf apk/
+          rm -rf apk/
           mkdir -p apk/
-          find ~ -type d -iname "release" -print0 | while IFS= read -r -d '' dir; do
-            find "$dir" -type f -name "*.apk" -exec sh -c 'cp "$1" "apk/${{ matrix.userName }}-${{ matrix.repoName }}-${{ matrix.branchName }}-${1##*/}"' sh {} \;
+          for file in `find ~ -name "*release*.apk" -print`; do
+            # 获取文件的基本名称
+            base=$(basename "$file")
+            # 如果文件是 TVBox_ 开头
+            if [[ "$base" == TVBox_* ]]; then
+              new_base=$(echo "$base" | sed "s/release/${{ matrix.userName }}_${{ env.tag }}/")
+            else
+              new_base="TVBox_${{ matrix.userName }}_${{ env.tag }}.apk"
+            fi
+            # 移动并重命名文件
+            mv "$file" "apk/$new_base"
           done
+          mv sourceCode-${{ env.commitS }}.* apk/
 
-
-      - name: Release Note
+      - name: 发行说明
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          lastCommit=$(grep "${{ matrix.userName }}\/${{ matrix.repoName }}\/${{ matrix.branchName }}" ${{ github.workspace }}/README.md |grep -o '[a-z0-9]\{40\}')
+          lastCommit=$(grep "${{ matrix.userName }}\/${{ matrix.repoName }}" ${{ github.workspace }}/README.md |grep -o '[a-z0-9]\{40\}')
           export LESSCHARSET=utf-8
-          echo -e "Credit: [${{ matrix.userName }}](${{ env.upStream }})\nCommit: ${{ env.commit }}\nChangelog:" > apk/${{ matrix.userName }}-Release.log
+          echo -e "Credit: [${{ matrix.userName }}](${{ env.upStream }})\nCommit: ${{ env.commit }}\nChangelog:\n\`\`\`" > apk/${{ matrix.userName }}-Release.log
           if [ "${{ env.commit }}" == "${lastCommit}" ]; then
             git log --pretty=format:%B ${{ env.commitS }} -1 |sed -e "s# \{2,\}#\n#g" -e "/^Merge \(pull\|branch\|remote\)/d" -e '/^$/d' |cat -n |sort -k2,2 -k1,1n |uniq -f1 |sort -k1,1n |cut -f2- >> apk/${{ matrix.userName }}-Release.log
           else
             git log --pretty=format:%B ${{ env.commitS }}...${lastCommit:0:7} |sed -e "s# \{2,\}#\n#g" -e "/^Merge \(pull\|branch\|remote\)/d" -e '/^$/d' |cat -n |sort -k2,2 -k1,1n |uniq -f1 |sort -k1,1n |cut -f2- >> apk/${{ matrix.userName }}-Release.log
           fi
+          echo -e '\n```' >> apk/${{ matrix.userName }}-Release.log
 
-
-      - name: Upload App To Artifact
+      - name: 程序上传
         uses: actions/upload-artifact@v4
         if: ${{ env.commit }}
         with:
-          name: ${{ matrix.userName }}-${{ matrix.repoName }}-${{ matrix.branchName }}
+          name: ${{ matrix.userName }}-${{ matrix.repoName }}
           path: |
             TVBoxOSC/apk/*
 
@@ -164,32 +176,24 @@ jobs:
         run: |
           echo "commit=" >> $GITHUB_ENV
 
-      - name: Release AND Upload Assets
-        uses: ncipollo/release-action@main
+      - name: 发布并上传
+        uses: ncipollo/release-action@v1
         if: ${{ env.commit }}
         with:
-          name: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}_${{ env.tag }}
-          tag: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}_${{ env.tag }}
+          name: ${{ env.tag }}
+          tag: ${{ env.tag }}
           bodyFile: TVBoxOSC/apk/${{ matrix.userName }}-Release.log
           allowUpdates: true
           removeArtifacts: true
           artifacts: |
             TVBoxOSC/apk/*.apk
-            TVBoxOSC/source-${{ env.commitS }}.*
-
-      - uses: dev-drprasad/delete-older-releases@master
-        with:
-          keep_latest: 5
-          delete_tags: true
-          delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}.*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            TVBoxOSC/apk/sourceCode-${{ env.commitS }}.*
  
   clean:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Delete older workflow runs And artifacts
+      - name: 删除较旧的工作流
         uses: Mattraks/delete-workflow-runs@main
         with:
           token: ${{ github.token }}
