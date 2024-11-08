@@ -1,4 +1,4 @@
-name: Auto_Box_build
+name: Auto Box build
 
 on:
   schedule:
@@ -45,17 +45,17 @@ jobs:
             branchName: main
             diy: chengxue2020DC.sh
             java_ver: 11
-	  - userName: crewray
+          - userName: crewray
             repoName: tvbox
             branchName: main
             diy: crewrayDC.sh
             java_ver: 11
-	  - userName: muxd93
+          - userName: muxd93
             repoName: TVBoxOS_XD
             branchName: main
             diy: muxd93DC.sh
             java_ver: 11
-	  - userName: zxyadc
+          - userName: zxyadc
             repoName: b-box
             branchName: main
             diy: zxyadcDC.sh
