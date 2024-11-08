@@ -9,6 +9,14 @@ on:
         description: '忽略构建记录以重新构建'
         required: false
         type: boolean
+      donotpublish:
+        description: '构建后不提交发布新版'
+        required: false
+        type: boolean
+      testOption:
+        description: 'arm64支持，不支持ijk解码'
+        required: false
+        type: boolean
 
 jobs:
   build:
@@ -32,11 +40,26 @@ jobs:
             branchName: main
             diy: mlabalabalaDC.sh
             java_ver: 11
-          - userName: wwz09
-            repoName: duocangbox
+          - userName: chengxue2020
+            repoName: box
             branchName: main
             diy: chengxue2020DC.sh
             java_ver: 11
+	  - userName: crewray
+            repoName: tvbox
+            branchName: main
+            diy: crewrayDC.sh
+            java_ver: 11
+	  - userName: muxd93
+            repoName: TVBoxOS_XD
+            branchName: main
+            diy: muxd93DC.sh
+            java_ver: 11
+	  - userName: zxyadc
+            repoName: b-box
+            branchName: main
+            diy: zxyadcDC.sh
+            java_ver: 11      
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -96,6 +119,13 @@ jobs:
         run: |
           #zip -q -x ".git/*" -x  ".github/*" -r sourceCode-${{ env.commitS }}.zip .
           tar -cJf sourceCode-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
+      - name: Option For Test
+        if: ${{ inputs.testOption }}
+        working-directory: TVBoxOSC
+        run: |
+          #添加arm64支持，不支持ijk解码
+          sed -i "/armeabi-v7a[\'\"]$/s#\$#, 'arm64-v8a'#" app/build.gradle
+          sed -i "/armeabi-v7a[\'\"]$/s#\$#, 'arm64-v8a'#" player/build.gradle
 
       - name: 安卓安装包签名
         if: ${{ env.commit }}
