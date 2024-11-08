@@ -55,7 +55,7 @@ jobs:
             repoName: b-box
             branchName: main
             diy: zxyadcDC.sh
-            java_ver: 17      
+            java_ver: 11 
     steps:
       - name: Checkout
         uses: actions/checkout@main
