@@ -1,21 +1,27 @@
-name: Clear Gradle Cache Workflow
-
+name: cleanup caches by a branch
 on:
-  workflow_dispatch:
+  pull_request:
+    types:
+      - closed
 
 jobs:
-  clear-gradle-cache:
+  cleanup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Cleanup
+        run: |
+          echo "Fetching list of cache key"
+          cacheKeysForPR=$(gh cache list --ref $BRANCH --limit 100 --json id --jq '.[].id')
 
-      # 这里可以根据需要设置 Gradle 相关的环境变量等
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          # 例如设置 Gradle 版本
-          gradle-version: '7.4' 
-
-      # 清除 Gradle 缓存，这里假设缓存目录在 ~/.gradle/caches
-      - name: Clear Gradle Cache
-        run: rm -rf ~/.gradle/caches
+          ## Setting this to not fail the workflow while deleting cache keys.
+          set +e
+          echo "Deleting caches..."
+          for cacheKey in $cacheKeysForPR
+          do
+              gh cache delete $cacheKey
+          done
+          echo "Done"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
