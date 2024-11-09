@@ -52,12 +52,10 @@ jobs:
             diy: zxyadcDC.sh
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Delete Gradle Caches
-        run: rm -rf ~/.gradle/caches
           
       - name: 检查新的提交
         run: |
@@ -127,19 +125,7 @@ jobs:
           sed -i '$a\RELEASE_KEY_ALIAS=TVBoxOSC'            ./gradle.properties
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
-
-      - name: Cache
-        uses: actions/cache@main
-        if: ${{ env.commit }}
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-${{ matrix.userName }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.userName }}-
-            
-      - uses: actions/setup-java@main
+      - uses: actions/setup-java@v4
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
@@ -147,7 +133,7 @@ jobs:
           
       - name: Setup Gradle
         if: ${{ env.commit }}
-        uses: gradle/actions/setup-gradle@main
+        uses: gradle/actions/setup-gradle@v4
 
       - name: 进行构建
         if: ${{ env.commit }}
