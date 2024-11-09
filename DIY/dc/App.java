@@ -22,9 +22,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.unit.Subunits;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.xuexiang.xupdate.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION;
 
@@ -66,7 +64,25 @@ public class App extends MultiDexApplication {
         JSEngine.getInstance().create();
         FileUtils.cleanPlayerCache();
         initXUpdate();
+
+        // davTest();
     }
+
+    // private void davTest () {
+    //     String davUrl = "https://www.bunnyabc.eu.org:15245/dav/";
+    //     String uname = "tvbox_dav";
+    //     String password = "123456";
+    //
+    //     OkHttpSardine client = new OkHttpSardine();
+    //     client.setCredentials(uname, password);
+    //
+    //     try {
+    //         InputStream inputStream = client.get("https://www.bunnyabc.eu.org:15245/dav/test1.txt");
+    //
+    //     } catch (IOException e) {
+    //         throw new RuntimeException(e);
+    //     }
+    // }
 
     private void initXUpdate() {
         XUpdate.get()
@@ -111,7 +127,7 @@ public class App extends MultiDexApplication {
         putDefault(HawkConfig.IJK_CODEC, "硬解码");
         putDefault(HawkConfig.HOME_REC_STYLE, false);// 首页多行
 
-        putDefault(HawkConfig.PROXY_URL, "");
+        putDefault(HawkConfig.PROXY_URL, URL.DOMAIN_NAME_PROXY);
         // 默认换台反转
         putDefault(HawkConfig.LIVE_CHANNEL_REVERSE, true);
         // 默认显示时间
@@ -150,40 +166,49 @@ public class App extends MultiDexApplication {
     }
 
     private void putDefaultApis() {
-        //String url = "";
+        String url = URL.DOMAIN_NAME_PROXY;
 
         // 默认加速历史记录
-        //List<String> proxyUrlHistory = Hawk.get(HawkConfig.PROXY_URL_HISTORY, new ArrayList<>());
-        //proxyUrlHistory.add("");
-        //proxyUrlHistory.add("https://github.moeyy.xyz/");
-       //proxyUrlHistory.add("https://gh.ddlc.top/");
-        //proxyUrlHistory.add("https://ghps.cc/");
+        List<String> proxyUrlHistory = Hawk.get(HawkConfig.PROXY_URL_HISTORY, new ArrayList<>());
+        proxyUrlHistory.add("");
+        proxyUrlHistory.add("https://github.moeyy.xyz/");
+        proxyUrlHistory.add("https://gh.ddlc.top/");
+        proxyUrlHistory.add("https://ghps.cc/");
        // proxyUrlHistory.add("https://raw.bunnylblbblbl.eu.org/");
-        // 默认线路地址
-        String defaultApiName = "默认线路";
-        String defaultApi = "https://ghp.ci/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json";
         // 默认仓库地址
         String defaultStoreApi = "https://ghp.ci/https://raw.githubusercontent.com/wwz09/ubuntu/main/TXT/dc.json";
 
-        Map<String, String> defaultApiMap = Hawk.get(HawkConfig.API_MAP, new HashMap<>());
-        defaultApiMap.put(defaultApiName, defaultApi);
+        // 添加默认epg历史记录
+        List<String> epgHistory = Hawk.get(HawkConfig.EPG_HISTORY, new ArrayList<>());
+        epgHistory.add("https://epg.112114.xyz?ch={name}&date={date}");
+        epgHistory.add("https://epg.112114.free.hr?ch={name}&date={date}");
+        epgHistory.add("https://epg.112114.eu.org?ch={name}&date={date}");
+        epgHistory.add("https://diyp.112114.xyz?ch={name}&date={date}");
+        // 默认epg
+        String defaultEpgUrl = "https://epg.112114.free.hr?ch={name}&date={date}";
 
-        List<String> defaultApiHistory = Hawk.get(HawkConfig.API_NAME_HISTORY, new ArrayList<>());
-        defaultApiHistory.add(defaultApiName);
 
         // 不添加默认线路
-        putDefault(HawkConfig.API_URL, defaultApi);
-        putDefault(HawkConfig.API_NAME, defaultApiName);
+        // 默认线路地址
+        // String defaultApiName = "自备份线路";
+        // String defaultApi = url + URL.DEFAULT_API_URL;
+        // Map<String, String> defaultApiMap = Hawk.get(HawkConfig.API_MAP, new HashMap<>());
+        // defaultApiMap.put(defaultApiName, defaultApi);
+        // List<String> defaultApiHistory = Hawk.get(HawkConfig.API_NAME_HISTORY, new ArrayList<>());
+        // defaultApiHistory.add(defaultApiName);
+        // putDefault(HawkConfig.API_URL, defaultApi);
+        // putDefault(HawkConfig.API_NAME, defaultApiName);
         // putDefault(HawkConfig.API_NAME_HISTORY, defaultApiHistory);
         // putDefault(HawkConfig.API_MAP, defaultApiMap);
+        // 不添加默认直播源
+        // putDefault(HawkConfig.LIVE_URL, url + URL.DEFAULT_LIVE_URL);
 
         putDefault(HawkConfig.DEFAULT_STORE_API, defaultStoreApi);
-        putDefault(HawkConfig.PLAY_TYPE, 1);
-        putDefault(HawkConfig.HOME_REC, 1);
-        // 默认渲染方式：推荐手机使用0-texture，电视1-surface
-        putDefault(HawkConfig.PLAY_RENDER, 1);
-        putDefault(HawkConfig.IJK_CODEC, "硬解码");
-        putDefault(HawkConfig.HOME_REC_STYLE, false);// 首页多行
+        putDefault(HawkConfig.PROXY_URL_HISTORY, proxyUrlHistory);
+        putDefault(HawkConfig.EPG_URL, defaultEpgUrl);
+        putDefault(HawkConfig.EPG_HISTORY, epgHistory);
+        putDefault(HawkConfig.LIVE_SHOW_NET_SPEED, true);
+        putDefault(HawkConfig.IS_GLOBAL_SCALE, true);
     }
 
     private void putDefault(String key, Object value) {
@@ -226,5 +251,13 @@ public class App extends MultiDexApplication {
 
     public Activity getCurrentActivity() {
         return AppManager.getInstance().currentActivity();
+    }
+
+    private static String dashData;
+    public void setDashData(String data) {
+        dashData = data;
+    }
+    public String getDashData() {
+        return dashData;
     }
 }
