@@ -55,6 +55,9 @@ jobs:
         uses: actions/checkout@main
         with:
           fetch-depth: 0
+
+      - name: Delete Gradle Caches
+        run: rm -rf ~/.gradle/caches
           
       - name: 检查新的提交
         run: |
