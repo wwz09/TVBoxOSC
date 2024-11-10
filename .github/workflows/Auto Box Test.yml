@@ -141,18 +141,21 @@ jobs:
       - name: 程序上传
         uses: actions/upload-artifact@v4
         if: ${{ env.commit }}
+        continue-on-error: true
         with:
           name: ${{ matrix.userName }}-${{ matrix.repoName }}
           path: |
             TVBoxOSC/apk/*
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
+        continue-on-error: true
         run: |
           echo "commit=" >> $GITHUB_ENV
 
       - name: 发布并上传
         uses: ncipollo/release-action@v1
         if: ${{ env.commit }}
+        continue-on-error: true
         with:
           name: ${{ env.tag }}
           tag: ${{ env.tag }}
@@ -160,13 +163,13 @@ jobs:
           removeArtifacts: true
           artifacts: |
             TVBoxOSC/apk/*.apk
-           
+            TVBoxOSC/apk/source-${{ env.commitS }}.*
 
   clean:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Delete older workflow runs and artifacts
+      - name: Delete older workflow runs 和 artifacts
         uses: Mattraks/delete-workflow-runs@main
         with:
           token: ${{ github.token }}
