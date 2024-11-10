@@ -96,7 +96,8 @@ jobs:
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          tar -cJf source-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
+          #zip -q -x ".git/*" -x  ".github/*" -r sourceCode-${{ env.commitS }}.zip .
+          tar -cJf sourceCode-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
 
       - name: 安卓安装包签名
         if: ${{ env.commit }}
@@ -162,13 +163,13 @@ jobs:
           removeArtifacts: true
           artifacts: |
             TVBoxOSC/apk/*.apk
-            TVBoxOSC/apk/source-${{ env.commitS }}.*
+            TVBoxOSC/apk/sourceCode-${{ env.commitS }}.*
 
   clean:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Delete older workflow runs 和 artifacts
+      - name: Delete older workflow runs and artifacts
         uses: Mattraks/delete-workflow-runs@main
         with:
           token: ${{ github.token }}
