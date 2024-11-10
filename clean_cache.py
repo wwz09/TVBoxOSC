@@ -55,7 +55,7 @@ def clean_caches():
     caches = get_caches()
     # 这里假设清理大于1GB（1024 * 1024 * 1024字节）的缓存，可根据实际需求修改规则
     for cache in caches:
-        if cache.get("size_in_bytes", 0) > 1024 * 1024 * 1024:
+        if cache.get("size_in_bytes", 0) > 20 * 20 * 20:
             delete_cache(cache["id"])
 
 
