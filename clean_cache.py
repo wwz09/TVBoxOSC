@@ -4,7 +4,7 @@ import os
 # GitHub仓库所有者和仓库名，需根据实际情况修改
 owner = "wwz09"
 repo = "TVBoxOSC"
-token = os.environ.get("GITHUB_TOKEN")
+token = os.environ.get("GIT_TOKEN")
 
 headers = {
     "Authorization": f"token {token}",
