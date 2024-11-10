@@ -188,10 +188,25 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Delete older workflow runs and artifacts
+      - name: Delete older workflow runs 和 artifacts
         uses: Mattraks/delete-workflow-runs@main
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
           retain_days: 1
           keep_minimum_runs: 5
+
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.x
+      - name: Install requests
+        run: pip install requests
+      - name: Clean Caches
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python clean_cache.py
