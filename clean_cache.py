@@ -25,19 +25,6 @@ def get_caches():
         print("无法获取缓存信息")
         return []
 
-def delete_cache(cache_id):
-    """
-    删除指定 ID 的缓存
-    Args:
-        cache_id (str): 缓存的 ID
-    """
-    url = f"https://api.github.com/repos/{owner}/{repo}/actions/caches/{cache_id}"
-    response = requests.delete(url, headers=headers)
-    if response.status_code == 204:
-        print(f"成功删除缓存 {cache_id}")
-    else:
-        print(f"无法删除缓存 {cache_id}")
-
 # 获取缓存列表并打印
 caches = get_caches()
 for cache in caches:
