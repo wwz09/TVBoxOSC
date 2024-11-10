@@ -46,7 +46,7 @@ jobs:
           - userName: muzi08168
             repoName: duobox
             branchName: main
-            diy: chengxue2020DC.sh
+            diy: muzi08168DC.sh
           
     steps:
       - name: Checkout
