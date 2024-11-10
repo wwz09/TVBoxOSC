@@ -42,7 +42,6 @@ jobs:
             repoName: box
             branchName: main
             diy: gj8438DC.sh
-            java_ver: 11
           - userName: muzi08168
             repoName: duobox
             branchName: main
