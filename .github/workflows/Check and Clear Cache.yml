@@ -7,27 +7,19 @@ on:
 
 
 jobs:
-  cleanup:
+  clean_cache:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
- 
-      - name: Setup Python
-        uses: actions/setup-python@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
         with:
-          python-version: '3.x'
- 
-      - name: Cache Cleanup
+          python-version: 3.x
+      - name: Install requests
+        run: pip install requests
+      - name: Clean Caches
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python cleanup_cache.py --expire-days 7
-      - name: Commit Changes
-        uses: EndBug/git-add-and-commit@v5
-        with:
-          add: '.'
-          commit_message: 'Cache cleanup'
- 
-      - name: Push Changes
-        uses: ad-m/github-push-action@master
-        with:
-          branch: 'master'
+          python clean_cache.py
