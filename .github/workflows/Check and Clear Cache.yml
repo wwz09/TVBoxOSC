@@ -1,4 +1,4 @@
-name: Test
+name: Check And Clear Cache
 
 on:
   #schedule:
