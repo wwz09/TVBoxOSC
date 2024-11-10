@@ -1,21 +1,33 @@
-name: Check And Clear Cache
-
+name: Cache Cleanup
+ 
 on:
-  #schedule:
-    #- cron: 59 */8 * * *
+  schedule:
+    - cron: '0 0 * * *'  # 每天午夜运行
   workflow_dispatch:
-    
+
 
 jobs:
-  build:
+  cleanup:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-     
-            
     steps:
-      - name: Cache node_modules
-        uses: actions/cache@v3
+      - name: Checkout Code
+        uses: actions/checkout@v2
+ 
+      - name: Setup Python
+        uses: actions/setup-python@v2
         with:
-          path: node_modules
-          key: ${{ runner.os }} - node - ${{ hashFiles('package.json') }}
+          python-version: '3.x'
+ 
+      - name: Cache Cleanup
+        run: |
+          python cleanup_cache.py --expire-days 7
+      - name: Commit Changes
+        uses: EndBug/git-add-and-commit@v5
+        with:
+          add: '.'
+          commit_message: 'Cache cleanup'
+ 
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: 'master'
