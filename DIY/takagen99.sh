@@ -5,6 +5,7 @@ cp -rf $GITHUB_WORKSPACE/DIY/png/图标7.png app/src/main/res/drawable/app_icon.
 cp -rf $GITHUB_WORKSPACE/DIY/png/app_bg.png app/src/main/res/drawable/app_bg.png
 sed -i 's%com.github.tvbox.osc.tk%com.github.tvbox.osc.t99%g' app/build.gradle
 sed -i 's%TVBox%大仙TV%g' app/src/main/res/values-zh/strings.xml
-sed -i 's%>https://chengxue2020.github.io/Cat-ports/pg/jsm.json<%>https://ghp.ci/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json<% g' app/src/main/res/values-zh/strings.xml
+sed -i 's%TVBox%大仙TV%g' app/src/main/res/values/strings.xml
+sed -i 's%(HawkConfig.API_URL, HomeActivity.getRes().getString(R.string.app_source))%(HawkConfig.API_URL, "https://ghp.ci/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json")% g' app/src/main/res/values-zh/strings.xml
 
 echo 'DIY end'
