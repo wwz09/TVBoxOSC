@@ -18,10 +18,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Check 和 Clear Cache
+      - name: Delete Cache Directory
         run: |
-          CACHE_SIZE=$(du -sh /actions/caches | awk '{print $1}')
-          if [ $(echo "$CACHE_SIZE > 10G" | bc -l) -eq 1 ]; then
-            # 这里可以添加清理缓存的实际命令，比如删除目录下的旧文件
-            find /actions/caches -type f -ctime +2 -delete
+          if [ -d "/home/runner/actions/cache" ]; then
+            rm -rf /home/runner/actions/cache
           fi
