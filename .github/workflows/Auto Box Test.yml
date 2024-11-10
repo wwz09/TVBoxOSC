@@ -25,6 +25,7 @@ jobs:
             repoName: TVBoxOS
             branchName: main
             diy: q215613905.sh
+            java_ver: 17
           #- userName: takagen99
             #repoName: Box
             #branchName: main
@@ -45,7 +46,7 @@ jobs:
             repoName: duobox
             branchName: main
             diy: muzi08168DC.sh
-            java_ver: 17
+            java_ver: 11
           
     steps:
       - name: Checkout
