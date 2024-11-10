@@ -25,7 +25,6 @@ jobs:
             repoName: TVBoxOS
             branchName: main
             diy: q215613905.sh
-            java_ver: 11
           #- userName: takagen99
             #repoName: Box
             #branchName: main
@@ -34,7 +33,6 @@ jobs:
             repoName: box
             branchName: main
             diy: mlabalabalaDC.sh
-            java_ver: 17
           - userName: wwz09
             repoName: duocangbox
             branchName: main
@@ -47,6 +45,7 @@ jobs:
             repoName: duobox
             branchName: main
             diy: muzi08168DC.sh
+            java_ver: 17
           
     steps:
       - name: Checkout
@@ -174,5 +173,5 @@ jobs:
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
-          retain_days: 14
-          keep_minimum_runs: 10
+          retain_days: 1
+          keep_minimum_runs: 6
