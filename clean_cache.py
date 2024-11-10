@@ -16,7 +16,7 @@ headers = {
 
 def get_caches():
     """
-    获取仓库的缓存信息
+    获取指定仓库的所有缓存信息
 
     Returns:
         list: 包含缓存信息的字典列表，如果获取失败则返回空列表
@@ -50,12 +50,13 @@ def delete_cache(cache_id):
 
 def clean_caches():
     """
-    清理缓存的主要函数，根据设定的规则判断并删除缓存
+    清理大于20MB缓存的主函数
     """
     caches = get_caches()
-    # 这里假设清理大于1GB（1024 * 1024 * 1024字节）的缓存，可根据实际需求修改规则
+    size_threshold = 20 * 1024 * 1024  # 20MB的字节数
+
     for cache in caches:
-        if cache.get("size_in_bytes", 0) > 20 * 20 * 20:
+        if cache.get("size_in_bytes", 0) > size_threshold:
             delete_cache(cache["id"])
 
 
