@@ -2,7 +2,7 @@ name: muzi08168 Build
 
 on:
   schedule:
-    - cron: 0 16 0/6 * * *
+    - cron: 34 */6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
