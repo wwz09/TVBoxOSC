@@ -2,7 +2,7 @@ name: wwz09 Build
 
 on:
   schedule:
-    - cron: 0 24 0/6 * * *
+    - cron: 40 */6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
