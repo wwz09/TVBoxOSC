@@ -2,7 +2,7 @@ name: gj8438 Build
 
 on:
   schedule:
-    - cron: 0 13 0/6 * * *
+    - cron: 30 */6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
