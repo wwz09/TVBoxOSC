@@ -2,7 +2,7 @@ name: mlabalabala build
 
 on:
   schedule:
-    - cron: 0 4-16/6 * * *
+    - cron: 0 10 0/6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
