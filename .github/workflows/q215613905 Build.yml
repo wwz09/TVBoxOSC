@@ -2,7 +2,7 @@ name: q215613905 Build
 
 on:
   schedule:
-    - cron: 0 19 0/6 * * *
+    - cron: 36 */6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
