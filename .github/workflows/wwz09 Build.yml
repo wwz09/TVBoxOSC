@@ -25,7 +25,7 @@ jobs:
             repoName: duocangbox
             branchName: main
             diy: wwz09DC.sh
-            java_ver: 11
+            #java_ver: 11
            
           
     steps:
@@ -129,15 +129,14 @@ jobs:
             mv "$file" "apk/$new_base"
           done
           mv sourceCode-${{ env.commitS }}.* apk/
-      - name: 程序上传
-        uses: actions/upload-artifact@v4
-        if: ${{ env.commit }}
-        continue-on-error: true
-        with:
-          name: ${{ matrix.userName }}-${{ matrix.repoName }}
-          path: |
-            TVBoxOSC/apk/*
-
+      #- name: 程序上传
+        #uses: actions/upload-artifact@v4
+        #if: ${{ env.commit }}
+        #continue-on-error: true
+        #with:
+          #name: ${{ matrix.userName }}-${{ matrix.repoName }}
+          #path: |
+            #TVBoxOSC/apk/*
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
         continue-on-error: true
