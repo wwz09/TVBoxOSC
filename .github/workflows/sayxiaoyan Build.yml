@@ -21,11 +21,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: sayxiaoyan
-            repoName: box-mlabalabala
+          - userName: muzi08168
+            repoName: duobox
             branchName: main
             diy: muzi08168DC.sh
-            java_ver: 11
+            #java_ver: 11
            
           
     steps:
