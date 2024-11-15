@@ -1,4 +1,4 @@
-name: muzi08168 Build
+name: sayxiaoyan Build
 
 on:
   schedule:
@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: muzi08168
-            repoName: duobox
+          - userName: sayxiaoyan
+            repoName: box-mlabalabala
             branchName: main
             diy: muzi08168DC.sh
             #java_ver: 11
