@@ -25,7 +25,7 @@ jobs:
             repoName: box-mlabalabala
             branchName: main
             diy: muzi08168DC.sh
-            #java_ver: 11
+            java_ver: 11
            
           
     steps:
