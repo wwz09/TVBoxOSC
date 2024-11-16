@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: gj8438
-            repoName: box
+          - userName: chengxue2020-org
+            repoName: mlabalabala-box
             branchName: main
             diy: gj8438DC.sh
             java_ver: 11
