@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: anyunxiu
-            repoName: box4.4
+          - userName: crewray
+            repoName: tvbox
             branchName: main
             diy: gj8438DC.sh
             java_ver: 11
