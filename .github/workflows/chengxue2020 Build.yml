@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: anyunxiu
-            repoName: box4.4
+          - userName: tvfuns
+            repoName: duocang_box
             branchName: main
             diy: gj8438DC.sh
             java_ver: 11
@@ -30,7 +30,7 @@ jobs:
           
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           
@@ -52,7 +52,6 @@ jobs:
           cd TVBoxOSC
           git checkout ${{ env.commit }}
           echo "tag=$(git log --date=format:'%Y%m%d-%H%M' --pretty=format:%cd ${{ env.commitS }} -1)" >> $GITHUB_ENV
-
       - name: DIY 
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
@@ -69,16 +68,17 @@ jobs:
           sed -i "/android:text=/s#=\"#=\"${{ env.tag }}\\\\n\\\\n#" app/src/main/res/layout/dialog_about.xml
           echo 'crosswalk源，防挂'
           if grep -q 'crosswalk' build.gradle; then
-            sed -i "/crosswalk/a\        maven { url 'https://o0HalfLife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
+            sed -i "/crosswalk/a\        maven { url 'https://o0halfLife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
           else
-            sed -i "/jitpack.io/a\        maven { url 'https://o0HalfLife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
+            sed -i "/jitpack.io/a\        maven { url 'https://o0halfLife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
           fi
           
       - name: 压缩源代码
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          tar -cJf source-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
+          #zip -q -x ".git/*" -x  ".github/*" -r sourceCode-${{ env.commitS }}.zip .
+          tar -cJf sourceCode-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
 
       - name: 安卓安装包签名
         if: ${{ env.commit }}
@@ -94,16 +94,13 @@ jobs:
           sed -i '$a\RELEASE_KEY_ALIAS=TVBoxOSC'            ./gradle.properties
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
-          
-      - uses: actions/setup-java@main
+      - uses: actions/setup-java@v4
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
           java-version: ${{ matrix.java_ver }}
-          
-      - name: Setup Gradle
+      - uses: gradle/actions/setup-gradle@v4
         if: ${{ env.commit }}
-        uses: gradle/actions/setup-gradle@main
  
       - name: 进行构建
         if: ${{ env.commit }}
@@ -118,19 +115,27 @@ jobs:
         run: |
           rm -rf apk/
           mkdir -p apk/
-          for file in `find ~ -name "*.apk" -print`; do
-            mv "$file" apk/TVBox_${{ matrix.userName }}_${{ env.tag }}.apk
+          for file in `find ~ -name "*release*.apk" -print`; do
+            # 获取文件的基本名称
+            base=$(basename "$file")
+            # 如果文件是 TVBox_ 开头
+            if [[ "$base" == TVBox_* ]]; then
+              new_base=$(echo "$base" | sed "s/release/${{ matrix.userName }}_${{ env.tag }}/")
+            else
+              new_base="${{ matrix.userName }}_${{ matrix.repoName }}_${{ env.tag }}.apk"
+            fi
+            # 移动并重命名文件
+            mv "$file" "apk/$new_base"
           done
-
+          mv sourceCode-${{ env.commitS }}.* apk/
       #- name: 程序上传
-        #uses: actions/upload-artifact@main
+        #uses: actions/upload-artifact@v4
         #if: ${{ env.commit }}
         #continue-on-error: true
         #with:
           #name: ${{ matrix.userName }}-${{ matrix.repoName }}
           #path: |
             #TVBoxOSC/apk/*
-            
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
         continue-on-error: true
@@ -142,13 +147,13 @@ jobs:
         if: ${{ env.commit }}
         continue-on-error: true
         with:
-          name: ${{ matrix.userName }}-${{ matrix.repoName }}
-          tag: ${{ matrix.userName }}-${{ matrix.repoName }}
+          name: ${{ matrix.userName }}_${{ matrix.repoName }}
+          tag: ${{ matrix.userName }}_${{ matrix.repoName }}
           allowUpdates: true
           removeArtifacts: true
           artifacts: |
             TVBoxOSC/apk/*.apk
-            TVBoxOSC/source-${{ env.commitS }}.*
+            TVBoxOSC/apk/sourceCode-${{ env.commitS }}.*
 
       - uses: dev-drprasad/delete-older-releases@master
         with:
