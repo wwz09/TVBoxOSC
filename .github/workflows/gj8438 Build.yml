@@ -30,7 +30,7 @@ jobs:
           
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
         with:
           fetch-depth: 0
           
@@ -95,7 +95,7 @@ jobs:
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
           
- - uses: actions/setup-java@main
+      - uses: actions/setup-java@main
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
@@ -148,7 +148,7 @@ jobs:
           removeArtifacts: true
           artifacts: |
             TVBoxOSC/apk/*.apk
-            TVBoxOSC/apk/sourceCode-${{ env.commitS }}.*
+            TVBoxOSC/source-${{ env.commitS }}.*
 
       - uses: dev-drprasad/delete-older-releases@master
         with:

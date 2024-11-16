@@ -94,7 +94,7 @@ jobs:
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
           
- - uses: actions/setup-java@main
+      - uses: actions/setup-java@main
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
@@ -156,6 +156,8 @@ jobs:
           delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
 
 
 

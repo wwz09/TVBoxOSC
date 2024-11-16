@@ -95,7 +95,7 @@ jobs:
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
           
- - uses: actions/setup-java@main
+      - uses: actions/setup-java@main
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
@@ -130,6 +130,7 @@ jobs:
           #name: ${{ matrix.userName }}-${{ matrix.repoName }}
           #path: |
             #TVBoxOSC/apk/*
+            
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
         continue-on-error: true
