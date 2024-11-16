@@ -25,6 +25,7 @@ jobs:
             repoName: q215613905-Tbox
             branchName: main
             diy: q215613905.sh
+            java_ver: 17
           - userName: takagen99
             repoName: Box
             branchName: main
