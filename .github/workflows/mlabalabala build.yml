@@ -26,7 +26,8 @@ jobs:
             branchName: main
             diy: mlabalabalaDC.sh
             java_ver: 11
-              
+           
+          
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -146,8 +147,8 @@ jobs:
         if: ${{ env.commit }}
         continue-on-error: true
         with:
-          name: ${{ env.tag }}
-          tag: ${{ env.tag }}
+          name: ${{ matrix.userName }}-${{ matrix.repoName }}
+          tag: ${{ matrix.userName }}-${{ matrix.repoName }}
           allowUpdates: true
           removeArtifacts: true
           artifacts: |

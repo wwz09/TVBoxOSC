@@ -147,8 +147,8 @@ jobs:
         if: ${{ env.commit }}
         continue-on-error: true
         with:
-          name: ${{ env.tag }}
-          tag: ${{ env.tag }}
+          name: ${{ matrix.userName }}-${{ matrix.repoName }}
+          tag: ${{ matrix.userName }}-${{ matrix.repoName }}
           allowUpdates: true
           removeArtifacts: true
           artifacts: |
