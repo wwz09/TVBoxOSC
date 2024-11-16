@@ -21,26 +21,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: wwz09
-            repoName: duocangbox
+          - userName: q215613905
+            repoName: TVBoxOS
             branchName: main
-            diy: wwz09DC.sh
-            java_ver: 11
-          - userName: gj8438
-            repoName: box
+            diy: q215613905.sh
+          - userName: takagen99
+            repoName: Box
             branchName: main
-            diy: gj8438DC.sh
-            java_ver: 11
-          - userName: mlabalabala
-            repoName: box
-            branchName: main
-            diy: mlabalabalaDC.sh
-            java_ver: 11
-          - userName: muzi08168
-            repoName: duobox
-            branchName: main
-            diy: muzi08168DC.sh
-            java_ver: 11
+            diy: takagen99.sh
+            java_ver: 17
            
           
     steps:
@@ -148,8 +137,6 @@ jobs:
             mv "$file" apk/TVBox_${{ matrix.userName }}_${{ env.tag }}.apk
           done
 
- 
-
       #- name: 程序上传
         #uses: actions/upload-artifact@main
         #if: ${{ env.commit }}
@@ -158,6 +145,7 @@ jobs:
           #name: ${{ matrix.userName }}-${{ matrix.repoName }}
           #path: |
             #TVBoxOSC/apk/*
+            
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
         continue-on-error: true
