@@ -61,8 +61,8 @@ jobs:
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          chmod +x ${{ github.workspace }}/DIY/${{ matrix.diy }}
-          bash ${{ github.workspace }}/DIY/${{ matrix.diy }}
+          chmod +x ${{ github.workspace }}/DIY/sh/${{ matrix.diy }}
+          bash ${{ github.workspace }}/DIY/sh/${{ matrix.diy }}
          
       - name: 额外修改
         if: ${{ env.commit }}
@@ -98,19 +98,8 @@ jobs:
           sed -i '$a\RELEASE_KEY_ALIAS=TVBoxOSC'            ./gradle.properties
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
-
-      - name: Cache
-        uses: actions/cache@main
-        if: ${{ env.commit }}
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-${{ matrix.userName }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.userName }}-
-            
-      - uses: actions/setup-java@main
+          
+ - uses: actions/setup-java@main
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
@@ -157,8 +146,8 @@ jobs:
         if: ${{ env.commit }}
         continue-on-error: true
         with:
-          name: ${{ matrix.userName }}_${{ matrix.repoName }}
-          tag: ${{ env.tag }}
+          name: ${{ matrix.userName }}-${{ matrix.repoName }}
+          tag: ${{ matrix.userName }}-${{ matrix.repoName }}
           allowUpdates: true
           removeArtifacts: true
           artifacts: |

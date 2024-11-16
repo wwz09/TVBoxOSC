@@ -30,7 +30,7 @@ jobs:
           
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
         with:
           fetch-depth: 0
           
@@ -52,12 +52,13 @@ jobs:
           cd TVBoxOSC
           git checkout ${{ env.commit }}
           echo "tag=$(git log --date=format:'%Y%m%d-%H%M' --pretty=format:%cd ${{ env.commitS }} -1)" >> $GITHUB_ENV
+
       - name: DIY 
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          chmod +x ${{ github.workspace }}/DIY/${{ matrix.diy }}
-          bash ${{ github.workspace }}/DIY/${{ matrix.diy }}
+          chmod +x ${{ github.workspace }}/DIY/sh/${{ matrix.diy }}
+          bash ${{ github.workspace }}/DIY/sh/${{ matrix.diy }}
          
       - name: 额外修改
         if: ${{ env.commit }}
@@ -77,8 +78,7 @@ jobs:
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          #zip -q -x ".git/*" -x  ".github/*" -r sourceCode-${{ env.commitS }}.zip .
-          tar -cJf sourceCode-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
+          tar -cJf source-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
 
       - name: 安卓安装包签名
         if: ${{ env.commit }}
@@ -94,13 +94,16 @@ jobs:
           sed -i '$a\RELEASE_KEY_ALIAS=TVBoxOSC'            ./gradle.properties
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
-      - uses: actions/setup-java@v4
+          
+ - uses: actions/setup-java@main
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
           java-version: ${{ matrix.java_ver }}
-      - uses: gradle/actions/setup-gradle@v4
+          
+      - name: Setup Gradle
         if: ${{ env.commit }}
+        uses: gradle/actions/setup-gradle@main
  
       - name: 进行构建
         if: ${{ env.commit }}
@@ -115,27 +118,19 @@ jobs:
         run: |
           rm -rf apk/
           mkdir -p apk/
-          for file in `find ~ -name "*release*.apk" -print`; do
-            # 获取文件的基本名称
-            base=$(basename "$file")
-            # 如果文件是 TVBox_ 开头
-            if [[ "$base" == TVBox_* ]]; then
-              new_base=$(echo "$base" | sed "s/release/${{ matrix.userName }}_${{ env.tag }}/")
-            else
-              new_base="TVBox_${{ matrix.userName }}_${{ env.tag }}.apk"
-            fi
-            # 移动并重命名文件
-            mv "$file" "apk/$new_base"
+          for file in `find ~ -name "*.apk" -print`; do
+            mv "$file" apk/TVBox_${{ matrix.userName }}_${{ env.tag }}.apk
           done
-          mv sourceCode-${{ env.commitS }}.* apk/
+
       #- name: 程序上传
-        #uses: actions/upload-artifact@v4
+        #uses: actions/upload-artifact@main
         #if: ${{ env.commit }}
         #continue-on-error: true
         #with:
           #name: ${{ matrix.userName }}-${{ matrix.repoName }}
           #path: |
             #TVBoxOSC/apk/*
+            
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
         continue-on-error: true
@@ -143,7 +138,7 @@ jobs:
           echo "commit=" >> $GITHUB_ENV
 
       - name: 发布并上传
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@main
         if: ${{ env.commit }}
         continue-on-error: true
         with:
@@ -153,7 +148,7 @@ jobs:
           removeArtifacts: true
           artifacts: |
             TVBoxOSC/apk/*.apk
-            TVBoxOSC/apk/sourceCode-${{ env.commitS }}.*
+            TVBoxOSC/source-${{ env.commitS }}.*
 
       - uses: dev-drprasad/delete-older-releases@master
         with:
