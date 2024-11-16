@@ -1,4 +1,4 @@
-name: muzi08168 Build
+name: Auto DC Build
 
 on:
   schedule:
@@ -21,10 +21,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: muzi08168
-            repoName: duobox
+          - userName: wwz09
+            repoName: duocangbox
             branchName: main
-            diy: muzi08168DC.sh
+            diy: wwz09DC.sh
+            java_ver: 11
+          - userName: zyang0422
+            repoName: mbox
+            branchName: main
+            diy: zyangDC.sh
+            java_ver: 11
+          - userName: jinqiusky
+            repoName: box
+            branchName: main
+            diy: gj8438DC.sh
             java_ver: 11
            
           
