@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: chuan166Null
-            repoName: box
+          - userName: anyunxiu
+            repoName: box4.4
             branchName: main
             diy: gj8438DC.sh
             java_ver: 11
