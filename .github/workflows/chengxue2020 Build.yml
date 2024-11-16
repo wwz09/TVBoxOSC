@@ -2,7 +2,7 @@ name: chengxue2020 Build
 
 on:
   schedule:
-    - cron: 30 */6 * * *
+    - cron: 32 */6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
@@ -21,13 +21,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: tvfuns
-            repoName: duocang_box
+          - userName: github-faning-net
+            repoName: box
             branchName: main
-            diy: gj8438DC.sh
+            diy: YYDC.sh
             java_ver: 11
-           
-          
+              
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -162,7 +161,6 @@ jobs:
           delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
 
 
