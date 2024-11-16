@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: jinqiusky
+          - userName: chuan166Null
             repoName: box
             branchName: main
             diy: gj8438DC.sh
