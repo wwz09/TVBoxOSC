@@ -15,12 +15,12 @@ on:
       KEEP_DAY:
         description: 'Workflow保留天数'
         required: true
-        default: '10'
+        default: '0'
         type: string
       KEEP_MININUM_RUNS:
         description: 'Workflow最少保留数量'
         required: true
-        default: '6'
+        default: '0'
         type: string
       DELETE_RELEASE:
         description: '删除Release开关'
