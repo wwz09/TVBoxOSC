@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: Yunconnect
-            repoName: Jade
+          - userName: lddqxl
+            repoName: box
             branchName: main
             diy: YYDC.sh
             java_ver: 11
