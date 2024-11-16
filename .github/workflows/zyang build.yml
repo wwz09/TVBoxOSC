@@ -1,4 +1,4 @@
-name: mlabalabala build
+name: zyang build
 
 on:
   schedule:
@@ -24,7 +24,7 @@ jobs:
           - userName: zyang0422
             repoName: mbox
             branchName: main
-            diy: mlabalabalaDC.sh
+            diy: zyangDC.sh
             java_ver: 11
               
     steps:
