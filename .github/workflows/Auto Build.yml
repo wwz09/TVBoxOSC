@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: q215613905
-            repoName: TVBoxOS
+          - userName: chengxue2020
+            repoName: q215613905-Tbox
             branchName: main
             diy: q215613905.sh
           - userName: takagen99
