@@ -1,8 +1,8 @@
-name: mlabalabala build
+name: q215613905 Build
 
 on:
   schedule:
-    - cron: 32 */6 * * *
+    - cron: 36 */6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
@@ -21,12 +21,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: mlabalabala
-            repoName: box
+          - userName: q215613905
+            repoName: TVBoxOS
             branchName: main
-            diy: mlabalabalaDC.sh
-            java_ver: 11
-              
+            diy: q215613905.sh
+            #java_ver: 17
+               
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -161,8 +161,6 @@ jobs:
           delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
 
 
 

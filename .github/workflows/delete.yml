@@ -15,12 +15,12 @@ on:
       KEEP_DAY:
         description: 'Workflow保留天数'
         required: true
-        default: '0'
+        default: '10'
         type: string
       KEEP_MININUM_RUNS:
         description: 'Workflow最少保留数量'
         required: true
-        default: '0'
+        default: '6'
         type: string
       DELETE_RELEASE:
         description: '删除Release开关'
@@ -34,7 +34,7 @@ on:
         type: string
 # 定时触发开启开始编译(把下面两个#去掉开启,时间设置请看定时开启编译说明)
   schedule:
-   - cron: 0 23 * * *
+   - cron: 0 20 * * *
    
 jobs:
   build:
