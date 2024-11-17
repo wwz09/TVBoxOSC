@@ -1,8 +1,8 @@
 name: takagen99 Build
 
 on:
-  schedule:
-    - cron: 38 */6 * * *
+  #schedule:
+    #- cron: 38 */6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
