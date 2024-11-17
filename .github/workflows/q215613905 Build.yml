@@ -25,7 +25,7 @@ jobs:
             repoName: TVBoxOS
             branchName: main
             diy: q215613905.sh
-            java_ver: 17
+            java_ver: 11
                
     steps:
       - name: Checkout
