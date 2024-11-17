@@ -7,6 +7,7 @@ cp -rf $GITHUB_WORKSPACE/DIY/png/图标9.png app/src/main/res/drawable-xxhdpi/ap
 cp -rf $GITHUB_WORKSPACE/DIY/png/图标9.png app/src/main/res/drawable-xxxhdpi/app_icon.png
 cp -rf $GITHUB_WORKSPACE/DIY/png/app_bg.png app/src/main/res/drawable/app_bg.png
 # sed -i 's%com.github.tvbox.osc%com.github.tvbox.osc.${{ matrix.osName }}%g' app/build.gradle
+sed -i 's%XXPermissions:13.6%XXPermissions:13.5%g' app/build.gradle
 sed -i 's%com.github.tvbox.osc%com.github.tvbox.osc.q21%g' app/build.gradle
 sed -i 's%TVBox%大师影视%g' app/src/main/res/values/strings.xml
 sed -i 's%(HawkConfig.API_URL, "");%(HawkConfig.API_URL, "https://ghp.ci/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json");%g' app/src/main/java/com/github/tvbox/osc/api/ApiConfig.java   
