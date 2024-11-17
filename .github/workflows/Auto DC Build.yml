@@ -31,10 +31,10 @@ jobs:
             branchName: main
             diy: zyangDC.sh
             java_ver: 11
-          - userName: jinqiusky
+          - userName: gj8438
             repoName: box
             branchName: main
-            diy: gj8438DC.sh
+            diy: YYDC.sh
             java_ver: 11
            
           
