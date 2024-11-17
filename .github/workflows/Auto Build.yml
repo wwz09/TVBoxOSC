@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: xuameng
-            repoName: TVBoxQban
+          - userName: q215613905
+            repoName: TVBoxOS
             branchName: main
             diy: q215613905.sh
             java_ver: 17
