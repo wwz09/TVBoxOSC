@@ -1,8 +1,8 @@
 name: zyang build
 
 on:
-  schedule:
-    - cron: 32 */6 * * *
+  #schedule:
+    #- cron: 32 */6 * * *
   workflow_dispatch:
     inputs:
       rebuild:
