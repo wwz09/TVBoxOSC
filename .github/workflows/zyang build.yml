@@ -98,6 +98,7 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.java_ver }}
+          
       - uses: gradle/actions/setup-gradle@v4
         if: ${{ env.commit }}
  
@@ -106,6 +107,7 @@ jobs:
         working-directory: TVBoxOSC
         run: |
           chmod +x gradlew
+          ./gradlew cleanBuildCache
           ./gradlew assemblerelease --build-cache --parallel --daemon --warning-mode all
 
       - name: 准备应用程序
