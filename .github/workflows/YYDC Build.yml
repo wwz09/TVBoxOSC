@@ -109,6 +109,7 @@ jobs:
         working-directory: TVBoxOSC
         run: |
           chmod +x gradlew
+          ./gradlew cleanBuildCache
           ./gradlew assemblerelease --build-cache --parallel --daemon --warning-mode all
 
       - name: 准备应用程序
@@ -120,16 +121,7 @@ jobs:
           for file in `find ~ -name "*.apk" -print`; do
             mv "$file" apk/TVBox_${{ matrix.userName }}_${{ env.tag }}.apk
           done
-
-      #- name: 程序上传
-        #uses: actions/upload-artifact@main
-        #if: ${{ env.commit }}
-        #continue-on-error: true
-        #with:
-          #name: ${{ matrix.userName }}-${{ matrix.repoName }}
-          #path: |
-            #TVBoxOSC/apk/*
-            
+     
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
         continue-on-error: true
