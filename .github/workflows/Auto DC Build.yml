@@ -26,8 +26,8 @@ jobs:
             branchName: main
             diy: wwz09DC.sh
             java_ver: 11
-          - userName: zyang0422
-            repoName: mbox
+          - userName: mlabalabala
+            repoName: box
             branchName: main
             diy: zyangDC.sh
             java_ver: 11
