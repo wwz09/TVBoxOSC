@@ -10,7 +10,7 @@ cp -rf $GITHUB_WORKSPACE/DIY/png/app_bg.png app/src/main/res/drawable/app_bg.png
 sed -i 's%XXPermissions:13.6%XXPermissions:13.5%g' app/build.gradle
 sed -i 's%com.github.tvbox.osc%com.github.tvbox.osc.q21%g' app/build.gradle
 sed -i 's%TVBox%大师影视%g' app/src/main/res/values/strings.xml
-sed -i 's%(HawkConfig.API_URL, "");%(HawkConfig.API_URL, "https://ghp.ci/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json");%g' app/src/main/java/com/github/tvbox/osc/api/ApiConfig.java   
+sed -i 's%(HawkConfig.API_URL, "");%(HawkConfig.API_URL, "https://ghproxy.net/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json");%g' app/src/main/java/com/github/tvbox/osc/api/ApiConfig.java   
 sed -i 's%Hawk.put(HawkConfig.PLAY_TYPE, 1);%Hawk.put(HawkConfig.HOME_REC, 0);       // Home Rec 0=豆瓣, 1=推荐, 2=历史\n Hawk.put(HawkConfig.PLAY_TYPE, 1);      // Player   0=系统, 1=IJK, 2=Exo\n Hawk.put(HawkConfig.IJK_CODEC, "硬解码"); // IJK Render 软解码, 硬解码\n%g' app/src/main/java/com/github/tvbox/osc/base/App.java
 
 

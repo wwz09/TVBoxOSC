@@ -6,6 +6,6 @@ cp -rf $GITHUB_WORKSPACE/DIY/png/app_bg.png app/src/main/res/drawable/app_bg.png
 sed -i 's%com.github.tvbox.osc.tk%com.github.tvbox.osc.t99%g' app/build.gradle
 sed -i 's%TVBox%大仙TV%g' app/src/main/res/values-zh/strings.xml
 sed -i 's%TVBox%大仙TV%g' app/src/main/res/values/strings.xml
-sed -i 's%HomeActivity.getRes().getString(R.string.app_source))%"https://ghp.ci/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json")% g' app/src/main/java/com/github/tvbox/osc/api/ApiConfig.java
+sed -i 's%HomeActivity.getRes().getString(R.string.app_source))%"https://ghproxy.net/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json")% g' app/src/main/java/com/github/tvbox/osc/api/ApiConfig.java
 
 echo 'DIY end'
