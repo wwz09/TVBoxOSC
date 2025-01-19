@@ -71,8 +71,8 @@ public class ApiDialog extends BaseDialog {
         epgApi = findViewById(R.id.epgInput);
         proxyUrl = findViewById(R.id.proxyInput);
         //内置网络接口在此处添加
-        inputApi.setText(Hawk.get(HawkConfig.API_URL, ""));
-        liveApi.setText(Hawk.get(HawkConfig.LIVE_URL, ""));
+        inputApi.setText(Hawk.get(HawkConfig.API_URL, "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/TXT/dc.json"));
+        liveApi.setText(Hawk.get(HawkConfig.LIVE_URL, "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/TXT/a.txt"));
         epgApi.setText(Hawk.get(HawkConfig.EPG_URL, ""));
         proxyUrl.setText(Hawk.get(HawkConfig.PROXY_URL, ""));
 
@@ -355,10 +355,10 @@ public class ApiDialog extends BaseDialog {
         defaultApiHistory.add(defaultApiName);
 
         // 不添加默认线路
-        // putDefault(HawkConfig.API_URL, defaultApi);
-        // putDefault(HawkConfig.API_NAME, defaultApiName);
-        // putDefault(HawkConfig.API_NAME_HISTORY, defaultApiHistory);
-        // putDefault(HawkConfig.API_MAP, defaultApiMap);
+        putDefault(HawkConfig.API_URL, defaultApi);
+        putDefault(HawkConfig.API_NAME, defaultApiName);
+        putDefault(HawkConfig.API_NAME_HISTORY, defaultApiHistory);
+        putDefault(HawkConfig.API_MAP, defaultApiMap);
 
         Hawk.put(HawkConfig.DEFAULT_STORE_API, defaultStoreApi);
     }
