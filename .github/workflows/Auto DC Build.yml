@@ -25,16 +25,19 @@ jobs:
             repoName: duocangbox
             branchName: main
             diy: wwz09DC.sh
+            dcdiy: DCDIY.sh
             java_ver: 11
           - userName: mlabalabala
             repoName: box
             branchName: main
             diy: zyangDC.sh
+            dcdiy: DCDIY.sh
             java_ver: 11
           - userName: gj8438
             repoName: box
             branchName: main
             diy: YYDC.sh
+            dcdiy: DCDIY.sh
             java_ver: 11
            
           
@@ -67,7 +70,9 @@ jobs:
         working-directory: TVBoxOSC
         run: |
           chmod +x ${{ github.workspace }}/DIY/sh/${{ matrix.diy }}
+          chmod +x ${{ github.workspace }}/DIY/sh/${{ matrix.dcdiy }}
           bash ${{ github.workspace }}/DIY/sh/${{ matrix.diy }}
+          bash ${{ github.workspace }}/DIY/sh/${{ matrix.dcdiy }}
          
       - name: 额外修改
         if: ${{ env.commit }}
