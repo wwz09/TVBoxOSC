@@ -344,7 +344,7 @@ public class ApiDialog extends BaseDialog {
         URL.DOMAIN_NAME_PROXY = url;
         // 默认线路地址
         String defaultApiName = "默认线路";
-        String defaultApi = "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/TXT/mr.json";
+        String defaultApi = "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/main.json";
         // 默认仓库地址
         String defaultStoreApi = "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/TXT/dc.json";
 

@@ -195,7 +195,7 @@ public class App extends MultiDexApplication {
         // 不添加默认线路
         // 默认线路地址
         String defaultApiName = "默认线路";
-        String defaultApi = "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/TXT/mr.json";
+        String defaultApi = "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/main.json";
         Map<String, String> defaultApiMap = Hawk.get(HawkConfig.API_MAP, new HashMap<>());
         defaultApiMap.put(defaultApiName, defaultApi);
         List<String> defaultApiHistory = Hawk.get(HawkConfig.API_NAME_HISTORY, new ArrayList<>());
