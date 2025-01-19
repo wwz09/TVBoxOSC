@@ -71,8 +71,8 @@ public class ApiDialog extends BaseDialog {
         epgApi = findViewById(R.id.epgInput);
         proxyUrl = findViewById(R.id.proxyInput);
         //内置网络接口在此处添加
-        inputApi.setText(Hawk.get(HawkConfig.API_URL, "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/TXT/dc.json"));
-        liveApi.setText(Hawk.get(HawkConfig.LIVE_URL, "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/TXT/a.txt"));
+        inputApi.setText(Hawk.get(HawkConfig.API_URL, "https://ghfast.top/https://raw.githubusercontent.com/wwz09/ubuntu/main/TXT/dc.json"));
+        liveApi.setText(Hawk.get(HawkConfig.LIVE_URL, "https://ghfast.top/https://raw.githubusercontent.com/wwz09/ubuntu/main/TXT/a.txt"));
         epgApi.setText(Hawk.get(HawkConfig.EPG_URL, ""));
         proxyUrl.setText(Hawk.get(HawkConfig.PROXY_URL, ""));
 
@@ -344,9 +344,9 @@ public class ApiDialog extends BaseDialog {
         URL.DOMAIN_NAME_PROXY = url;
         // 默认线路地址
         String defaultApiName = "默认线路";
-        String defaultApi = "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/main.json";
+        String defaultApi = "https://ghfast.top/https://raw.githubusercontent.com/wwz09/ubuntu/main/main.json";
         // 默认仓库地址
-        String defaultStoreApi = "https://cdn.jsdelivr.net/gh/wwz09/ubuntu@main/TXT/dc.json";
+        String defaultStoreApi = "https://ghfast.top/https://raw.githubusercontent.com/wwz09/ubuntu/main/TXT/dc.json";
 
         Map<String, String> defaultApiMap = Hawk.get(HawkConfig.API_MAP, new HashMap<>());
         defaultApiMap.put(defaultApiName, defaultApi);
