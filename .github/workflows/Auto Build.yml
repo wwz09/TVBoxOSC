@@ -21,13 +21,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: q215613905
-            repoName: TVBoxOS
+          - userName: wwz09
+            repoName: QBox
             branchName: main
             diy: q215613905.sh
             java_ver: 11
-          - userName: takagen99
-            repoName: Box
+          - userName: wwz09
+            repoName: TBox
             branchName: main
             diy: takagen99.sh
             java_ver: 17
@@ -162,7 +162,6 @@ jobs:
           delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
 
 
