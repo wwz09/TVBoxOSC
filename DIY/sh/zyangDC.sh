@@ -18,6 +18,6 @@ cp -rf $GITHUB_WORKSPACE/DIY/dc/Checker.java app/src/main/java/com/github/tvbox/
 cp -rf $GITHUB_WORKSPACE/DIY/dc/App.java app/src/main/java/com/github/tvbox/osc/bbox/base/App.java
 sed -i 's%XXPermissions:13.6%XXPermissions:13.5%g' app/build.gradle
 sed -i 's%tv.org.eu.bunnyabc%tv.org.eu.bunnyabc.mla%g' app/build.gradle
-sed -i 's%Jade%聚影视%g' app/src/main/res/values/strings.xml
+sed -i 's%Jade%VIP影视%g' app/src/main/res/values/strings.xml
 
 echo 'DIY end'
