@@ -31,7 +31,7 @@ jobs:
             repoName: box
             branchName: main
             diy: zyangDC.sh
-            dcdiy: DCDIY.sh
+            dcdiy: DCDIYA.sh
             java_ver: 11
           - userName: gj8438
             repoName: box
@@ -177,6 +177,7 @@ jobs:
           delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
 
