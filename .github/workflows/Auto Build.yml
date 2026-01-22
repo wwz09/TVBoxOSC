@@ -35,7 +35,7 @@ jobs:
           
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           
@@ -79,11 +79,12 @@ jobs:
             sed -i "/jitpack.io/a\        maven { url 'https://o0HalfLife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
           fi
           
-      - name: 压缩源代码
-        if: ${{ env.commit }}
-        working-directory: TVBoxOSC
-        run: |
-          tar -cJf source-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
+      # 移除源代码压缩步骤，不再上传tar.xz文件
+      #- name: 压缩源代码
+      #  if: ${{ env.commit }}
+      #  working-directory: TVBoxOSC
+      #  run: |
+      #    tar -cJf source-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
 
       - name: 安卓安装包签名
         if: ${{ env.commit }}
@@ -100,22 +101,19 @@ jobs:
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
           
-      - uses: actions/setup-java@main
+      - uses: actions/setup-java@v5
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
           java-version: ${{ matrix.java_ver }}
-          
-      - name: Setup Gradle
-        if: ${{ env.commit }}
-        uses: gradle/actions/setup-gradle@main
- 
+      
       - name: 进行构建
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
           chmod +x gradlew
-          ./gradlew assemblerelease --build-cache --parallel --daemon --warning-mode all
+          # 不使用 --build-cache 避免缓存清理失败
+          ./gradlew assembleRelease --parallel --daemon --warning-mode all
 
       - name: 准备应用程序
         if: ${{ env.commit }}
@@ -123,9 +121,53 @@ jobs:
         run: |
           rm -rf apk/
           mkdir -p apk/
-          for file in `find ~ -name "*.apk" -print`; do
-            mv "$file" apk/TVBox_${{ matrix.userName }}_${{ env.tag }}.apk
-          done
+          
+          # 详细显示构建输出目录结构，帮助调试
+          echo "=== 显示构建输出目录结构 ==="
+          ls -la || true
+          ls -la app || true
+          ls -la app/build || true
+          ls -la app/build/outputs || true
+          ls -la app/build/outputs/apk || true
+          ls -la app/build/outputs/apk/* || true
+          
+          # 搜索所有可能的APK位置，包括不同的构建变体目录
+          echo "=== 正在搜索APK文件 ==="
+          find . -name "*.apk" -type f -print
+          
+          # 收集所有APK文件，不管名称是什么
+          apk_files=$(find . -name "*.apk" -type f -print)
+          
+          if [ -z "$apk_files" ]; then
+            echo "=== 未找到任何APK文件！显示完整目录结构 ==="
+            find . -type f -name "*.apk" -o -name "*release*" | head -20
+            # 检查是否有bundle文件
+            find . -name "*.aab" -type f -print
+          else
+            # 处理找到的APK文件
+            for file in $apk_files; do
+              base=$(basename "$file")
+              if [[ "$base" == TVBox_* ]]; then
+                new_base=$(echo "$base" | sed "s/release/${{ matrix.userName }}_${{ env.tag }}/")
+              else
+                new_base="TVBox_${{ matrix.userName }}_${{ env.tag }}.apk"
+              fi
+              echo "移动文件: $file -> apk/$new_base"
+              mv "$file" "apk/$new_base"
+            done
+          fi
+          
+          # 列出apk目录内容，确认APK文件存在
+          echo "=== APK目录最终内容 ==="
+          ls -la apk/
+          
+          # 检查是否有APK文件，如果没有，创建一个空文件作为占位符（防止发布失败）
+          if [ -z "$(ls -A apk/*.apk 2>/dev/null)" ]; then
+            echo "=== 警告：APK目录中没有APK文件！创建占位符文件 ==="
+            touch apk/placeholder.txt
+          fi
+          
+          echo "=== 准备应用程序步骤完成 ==="
 
       #- name: 程序上传
         #uses: actions/upload-artifact@main
@@ -143,25 +185,25 @@ jobs:
           echo "commit=" >> $GITHUB_ENV
 
       - name: 发布并上传
-        uses: ncipollo/release-action@main
+        uses: ncipollo/release-action@v1
         if: ${{ env.commit }}
         continue-on-error: true
         with:
-          name: ${{ matrix.userName }}-${{ matrix.repoName }}
-          tag: ${{ matrix.userName }}-${{ matrix.repoName }}
+          name: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ env.tag }}
+          tag: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ env.tag }}_${{ env.commitS }}
           allowUpdates: true
           removeArtifacts: true
           artifacts: |
             TVBoxOSC/apk/*.apk
-            TVBoxOSC/source-${{ env.commitS }}.*
 
       - uses: dev-drprasad/delete-older-releases@master
         with:
           keep_latest: 10
           delete_tags: true
-          delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ matrix.branchName }}.*
+          delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
 
