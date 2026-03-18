@@ -14,7 +14,7 @@ on:
         required: false
         type: boolean
 
-# 强制 Node.js 24，消除弃用警告
+# 强制 Node.js24，彻底消除弃用警告
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -174,11 +174,17 @@ jobs:
           artifacts: |
             TVBoxOSC/apk/*.apk
 
-      # ✅ 已升级到支持 Node.js24 的最新版
-      - uses: dev-drprasad/delete-older-releases@v0.3.0
-        with:
-          keep_latest: 10
-          delete_tags: true
-          delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_.*
+      # ==============================
+      # ✅ 原生脚本清理旧版本 → 无警告
+      # ==============================
+      - name: Delete old releases (keep latest 10)
+        if: ${{ env.commit }}
+        run: |
+          PREFIX="${{ matrix.userName }}_${{ matrix.repoName }}_"
+          releases=$(gh release list --json tagName,createdAt | jq -r 'sort_by(.createdAt) | reverse | .[].tagName' | grep "^$PREFIX")
+          to_delete=$(echo "$releases" | tail -n +11)
+          if [ -n "$to_delete" ]; then
+            echo "$to_delete" | xargs -I {} gh release delete {} --yes --cleanup-tag
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
