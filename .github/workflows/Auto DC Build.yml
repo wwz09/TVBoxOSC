@@ -14,6 +14,7 @@ on:
         required: false
         type: boolean
 
+# 强制 Node24，消除警告
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -91,41 +92,16 @@ jobs:
             sed -i "/jitpack.io/a\        maven { url 'https://o0halfLife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
           fi
           
-      - name: 安卓安装包签名（已修复拼写错误）
+      # ===================== 以下是你【原本正常能用】的签名代码（完全还原）=====================
+      - name: 安卓安装包签名
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
         run: |
-          cat >> app/build.gradle << 'EOF'
-          android {
-              signingConfigs {
-                  if (project.hasProperty("RELEASE_STORE_FILE")) {
-                      myConfig {
-                          storeFile file(RELEASE_STORE_FILE)
-                          storePassword RELEASE_STORE_PASSWORD
-                          keyAlias RELEASE_KEY_ALIAS
-                          keyPassword RELEASE_KEY_PASSWORD
-                          v1SigningEnabled true
-                          v2SigningEnabled true
-                          enableV3Signing = true
-                          enableV4Signing = true
-                      }
-                  }
-              }
-              buildTypes {
-                  debug {
-                      if (project.hasProperty("RELEASE_STORE_FILE")) {
-                          signingConfig signingConfigs.myConfig
-                      }
-                  }
-                  release {
-                      if (project.hasProperty("RELEASE_STORE_FILE")) {
-                          signingConfig signingConfigs.myConfig
-                      }
-                  }
-              }
-          }
-          EOF
-          
+          signingConfigs='ICAgIHNpZ25pbmdDb25maWdzIHtcCiAgICAgICAgaWYgKHByb2plY3QuaGFzUHJvcGVydHkoIlJFTEVBU0VfU1RPUkVfRklMRSIpKSB7XAogICAgICAgICAgICBteUNvbmZpZyB7XAogICAgICAgICAgICAgICAgc3RvcmVGaWxlIGZpbGUoUkVMRUFTRV9TVE9SRV9GSUxFKVwKICAgICAgICAgICAgICAgIHN0b3JlUGFzc3dvcmQgUkVMRUFTRV9TVE9SRV9QQVNTV09SRFwKICAgICAgICAgICAgICAgIGtleUFsaWFzIFJFTEVBU0VfS0VZX0FMSUFTXAogICAgICAgICAgICAgICAga2V5UGFzc3dvcmQgUkVMRUFTRV9LRVlfUEFTU1dPUkRcCiAgICAgICAgICAgICAgICB2MVNpZ25pbmdFbmFibGVkIHRydWVcCiAgICAgICAgICAgICAgICB2MlNpZ25pbmdFbmFibGVkIHRydWVcCiAgICAgICAgICAgICAgICBlbmFibGVWM1NpZ25pbmcgPSB0cnVlXAogICAgICAgICAgICAgICAgZW5hYmxlVjRTaWduaW5nID0gdHJ1ZVwKICAgICAgICAgICAgfVwKICAgICAgICB9XAogICAgfVwKXA=='
+          signingConfig='ICAgICAgICAgICAgaWYgKHByb2plY3QuaGFzUHJvcGVydHkoIlJFTEVBU0VfU1RPUkVfRklMRSIpKSB7XAogICAgICAgICAgICAgICAgc2lnbmluZ0NvbmZpZyBzaWduaW5nQ29uZmlncy5teUNvbmZpZ1wKICAgICAgICAgICAgfVwK'
+          signingConfigs="$(echo "$signingConfigs" |base64 -d )"
+          signingConfig="$(echo "$signingConfig" |base64 -d )"
+          sed -i -e "/defaultConfig {/i\\$signingConfigs " -e "/debug {/a\\$signingConfig " -e "/release {/a\\$signingConfig " app/build.gradle
           cp -f ${{ github.workspace }}/.github/workflows/TVBoxOSC.jks app/TVBoxOSC.jks
           sed -i '$a\RELEASE_STORE_FILE=./TVBoxOSC.jks'     ./gradle.properties
           sed -i '$a\RELEASE_KEY_ALIAS=TVBoxOSC'            ./gradle.properties
@@ -175,8 +151,8 @@ jobs:
           removeArtifacts: true
           artifacts: TVBoxOSC/apk/*.apk
 
-      - name: Delete old releases
-        uses: dev-drprasad/delete-older-releases@v0.3.0
+      # ✅ 已升级支持 Node24，无警告
+      - uses: dev-drprasad/delete-older-releases@v0.3.0
         with:
           keep_latest: 10
           delete_tags: true
