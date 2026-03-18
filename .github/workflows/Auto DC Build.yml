@@ -14,7 +14,7 @@ on:
         required: false
         type: boolean
 
-# 全局强制启用 Node.js24，彻底消除弃用警告
+# 强制 Node.js24
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -68,6 +68,7 @@ jobs:
           cd TVBoxOSC
           git checkout ${{ env.commit }}
           echo "tag=$(git log --date=format:'%Y%m%d-%H%M' --pretty=format:%cd ${{ env.commitS }} -1)" >> $GITHUB_ENV
+
       - name: DIY 
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
@@ -96,7 +97,7 @@ jobs:
         working-directory: TVBoxOSC
         run: |
           signingConfigs='ICAgIHNpZ25pbmdDb25maWdzIHtcCiAgICAgICAgaWYgKHByb2plY3QuaGFzUHJvcGVydHkoIlJFTEVBU0VfU1RPUkVfRklMRSIpKSB7XAogICAgICAgICAgICBteUNvbmZpZyB7XAogICAgICAgICAgICAgICAgc3RvcmVGaWxlIGZpbGUoUkVMRUFTRV9TVE9SRV9GSUxFKVwKICAgICAgICAgICAgICAgIHN0b3JlUGFzc3dvcmQgUkVMRUFTRV9TVE9SRV9QQVNTV09SRFwKICAgICAgICAgICAgICAgIGtleUFsaWFzIFJFTEVBU0VfS0VZX0FMSUFTXAogICAgICAgICAgICAgICAga2V5UGFzc3dvcmQgUkVMRUFTRV9LRVlfUEFTU1dPUkRcCiAgICAgICAgICAgICAgICB2MVNpZ25pbmdFbmFibGVkIHRydWVcCiAgICAgICAgICAgICAgICB2MlNpZ25pbmdFbmFibGVkIHRydWVcCiAgICAgICAgICAgICAgICBlbmFibGVWM1NpZ25pbmcgPSB0cnVlXAogICAgICAgICAgICAgICAgZW5hYmxlVjRTaWduaW5nID0gdHJ1ZVwKICAgICAgICAgICAgfVwKICAgICAgICB9XAogICAgfVwKXA=='
-          signingConfig='ICAgICAgICAgICAgaWYgKHByb2plY3QuaGFzUHJvcGVydHkoIlJFTEVBU0VfU1RPUkVfRklMRSIpKSB7XAogICAgICAgICAgICAgICAgc2lnbmluZ0NvbmZpZyBzaWduaW5nQ29uZmlncy5teUNvbmZpZ1wKICAgICAgICAgICAgfVwK'
+          signingConfig='ICAgICAgICAgICAgaWYgKHByb2plY3QuaGFzUHJvcGVydHkoIlJFTEVBU0VfU1RPUkVfRklMRSIpKSB7XAogICAgICAgICAgICAgICAgc2lnbmluZ0NvbmZpZyBzaWduaW5nQ29uZ25pZ25zLm15Q29uZmlnXAogICAgICAgICAgICAgfVwK'
           signingConfigs="$(echo "$signingConfigs" |base64 -d )"
           signingConfig="$(echo "$signingConfig" |base64 -d )"
           sed -i -e "/defaultConfig {/i\\$signingConfigs " -e "/debug {/a\\$signingConfig " -e "/release {/a\\$signingConfig " app/build.gradle
@@ -105,11 +106,13 @@ jobs:
           sed -i '$a\RELEASE_KEY_ALIAS=TVBoxOSC'            ./gradle.properties
           sed -i '$a\RELEASE_STORE_PASSWORD=TVBoxOSC'       ./gradle.properties
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
+
       - uses: actions/setup-java@v5
         if: ${{ matrix.java_ver }}
         with:
           distribution: temurin
           java-version: ${{ matrix.java_ver }}
+
       - name: 进行构建
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
@@ -123,46 +126,12 @@ jobs:
         run: |
           rm -rf apk/
           mkdir -p apk/
-          echo "=== 显示构建输出目录结构 ==="
-          ls -la || true
-          ls -la app || true
-          ls -la app/build || true
-          ls -la app/build/outputs || true
-          ls -la app/build/outputs/apk || true
-          ls -la app/build/outputs/apk/* || true
-          
-          echo "=== 正在搜索APK文件 ==="
-          find . -name "*.apk" -type f -print
-          
-          apk_files=$(find . -name "*.apk" -type f -print)
-          
-          if [ -z "$apk_files" ]; then
-            echo "=== 未找到任何APK文件！显示完整目录结构 ==="
-            find . -type f -name "*.apk" -o -name "*release*" | head -20
-            find . -name "*.aab" -type f -print
-          else
-            for file in $apk_files; do
-              base=$(basename "$file")
-              if [[ "$base" == TVBox_* ]]; then
-                new_base=$(echo "$base" | sed "s/release/${{ matrix.userName }}_${{ env.tag }}/")
-              else
-                new_base="${{ matrix.userName }}_${{ matrix.repoName }}_${{ env.tag }}.apk"
-              fi
-              echo "移动文件: $file -> apk/$new_base"
-              mv "$file" "apk/$new_base"
-            done
-          fi
-          
-          echo "=== APK目录最终内容 ==="
-          ls -la apk/
-          
-          if [ -z "$(ls -A apk/*.apk 2>/dev/null)" ]; then
-            echo "=== 警告：APK目录中没有APK文件！创建占位符文件 ==="
-            touch apk/placeholder.txt
-          fi
-          
-          echo "跳过源代码压缩文件移动步骤"
-          echo "=== 准备应用程序步骤完成 ==="
+          apk_files=$(find . -name "*.apk" -type f)
+          for file in $apk_files; do
+            base=$(basename "$file")
+            new_base="${{ matrix.userName }}_${{ matrix.repoName }}_${{ env.tag }}.apk"
+            mv "$file" "apk/$new_base"
+          done
 
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
@@ -179,14 +148,15 @@ jobs:
           tag: ${{ matrix.userName }}_${{ matrix.repoName }}_${{ env.tag }}_${{ env.commitS }}
           allowUpdates: true
           removeArtifacts: true
-          artifacts: |
-            TVBoxOSC/apk/*.apk
+          artifacts: TVBoxOSC/apk/*.apk
 
-      # ✅ 已升级到支持 Node.js24 的最新版本
-      - uses: dev-drprasad/delete-older-releases@v0.3.0
+      # ✅ 替换为官方支持 Node.js24 的 Action，无警告
+      - name: Delete old releases
+        uses: actions/delete-package-versions@v5
         with:
-          keep_latest: 10
-          delete_tags: true
-          delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}.*
+          min-versions-to-keep: 10
+          delete-only-pre-release-versions: "false"
+          package-name: ${{ matrix.userName }}_${{ matrix.repoName }}
+          package-type: "release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
