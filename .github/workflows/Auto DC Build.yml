@@ -21,12 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: wwz09
-            repoName: duocangbox
-            branchName: main
-            diy: wwz09DC.sh
-            dcdiy: DCDIY.sh
-            java_ver: 11
           - userName: mlabalabala
             repoName: box
             branchName: main
