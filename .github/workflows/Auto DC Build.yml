@@ -14,6 +14,10 @@ on:
         required: false
         type: boolean
 
+# 全局强制启用 Node.js24，彻底消除弃用警告
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,8 +43,7 @@ jobs:
             diy: YYDC.sh
             dcdiy: DCDIY.sh
             java_ver: 11
-           
-          
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -88,14 +91,6 @@ jobs:
             sed -i "/jitpack.io/a\        maven { url 'https://o0halfLife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
           fi
           
-      # 移除源代码压缩步骤，不再上传tar.xz文件
-      #- name: 压缩源代码
-      #  if: ${{ env.commit }}
-      #  working-directory: TVBoxOSC
-      #  run: |
-      #    #zip -q -x ".git/*" -x  ".github/*" -r sourceCode-${{ env.commitS }}.zip .
-      #    tar -cJf sourceCode-${{ env.commitS }}.tar.xz --exclude=.git --exclude=.github *
-
       - name: 安卓安装包签名
         if: ${{ env.commit }}
         working-directory: TVBoxOSC
@@ -120,7 +115,6 @@ jobs:
         working-directory: TVBoxOSC
         run: |
           chmod +x gradlew
-          # 不使用 --build-cache 避免缓存清理失败
           ./gradlew assembleRelease --parallel --daemon --warning-mode all
 
       - name: 准备应用程序
@@ -129,8 +123,6 @@ jobs:
         run: |
           rm -rf apk/
           mkdir -p apk/
-          
-          # 详细显示构建输出目录结构，帮助调试
           echo "=== 显示构建输出目录结构 ==="
           ls -la || true
           ls -la app || true
@@ -139,20 +131,16 @@ jobs:
           ls -la app/build/outputs/apk || true
           ls -la app/build/outputs/apk/* || true
           
-          # 搜索所有可能的APK位置，包括不同的构建变体目录
           echo "=== 正在搜索APK文件 ==="
           find . -name "*.apk" -type f -print
           
-          # 收集所有APK文件，不管名称是什么
           apk_files=$(find . -name "*.apk" -type f -print)
           
           if [ -z "$apk_files" ]; then
             echo "=== 未找到任何APK文件！显示完整目录结构 ==="
             find . -type f -name "*.apk" -o -name "*release*" | head -20
-            # 检查是否有bundle文件
             find . -name "*.aab" -type f -print
           else
-            # 处理找到的APK文件
             for file in $apk_files; do
               base=$(basename "$file")
               if [[ "$base" == TVBox_* ]]; then
@@ -165,27 +153,17 @@ jobs:
             done
           fi
           
-          # 列出apk目录内容，确认APK文件存在
           echo "=== APK目录最终内容 ==="
           ls -la apk/
           
-          # 检查是否有APK文件，如果没有，创建一个空文件作为占位符（防止发布失败）
           if [ -z "$(ls -A apk/*.apk 2>/dev/null)" ]; then
             echo "=== 警告：APK目录中没有APK文件！创建占位符文件 ==="
             touch apk/placeholder.txt
           fi
           
-          # 不再上传源代码压缩文件，跳过移动步骤
           echo "跳过源代码压缩文件移动步骤"
           echo "=== 准备应用程序步骤完成 ==="
-      #- name: 程序上传
-        #uses: actions/upload-artifact@v4
-        #if: ${{ env.commit }}
-        #continue-on-error: true
-        #with:
-          #name: ${{ matrix.userName }}-${{ matrix.repoName }}
-          #path: |
-            #TVBoxOSC/apk/*
+
       - name: Whether Or Not to Publish
         if: ${{ inputs.donotpublish && env.commit }}
         continue-on-error: true
@@ -204,16 +182,11 @@ jobs:
           artifacts: |
             TVBoxOSC/apk/*.apk
 
-      - uses: dev-drprasad/delete-older-releases@master
+      # ✅ 已升级到支持 Node.js24 的最新版本
+      - uses: dev-drprasad/delete-older-releases@v0.3.0
         with:
           keep_latest: 10
           delete_tags: true
-          delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}_.*
+          delete_tag_pattern: ${{ matrix.userName }}_${{ matrix.repoName }}.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
-
-
-
